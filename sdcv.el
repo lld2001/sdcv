@@ -603,17 +603,18 @@ Argument DICTIONARY-LIST the word that need transform."
 (defun sdcv-translate-result (word dictionary-list)
   "Call sdcv to search word in dictionary list, return filtered
 string of results."
-  (sdcv-filter
-   (shell-command-to-string
-    ;; Set LANG environment variable, make sure `shell-command-to-string' can handle CJK character correctly.
-    (format "env LANG=%s %s -x -n %s %s --data-dir=%s"
-            sdcv-env-lang
-            sdcv-program
-            (mapconcat (lambda (dict)
-                         (concat "-u \"" dict "\""))
-                       dictionary-list " ")
-            (format "\"%s\"" word)
-            sdcv-dictionary-data-dir))))
+  ;; add -0 option，sdcv dilplay correct.
+  (let ((cmd (format "%s -x -0 -n %s %s --data-dir=\"%s\""
+                     sdcv-program
+                     (mapconcat (lambda (dict)
+                                  (concat "-u \"" dict "\""))
+                                dictionary-list " ")
+                     (format "\"%s\"" word)
+                     (expand-file-name sdcv-dictionary-data-dir))))
+    (sdcv-filter
+     (shell-command-to-string
+      ;; Set LANG environment variable, make sure `shell-command-to-string' can handle CJK character correctly.
+      cmd))))
 
 (defun sdcv-filter (sdcv-string)
   "This function is for filter sdcv output string,.
@@ -624,7 +625,7 @@ Argument SDCV-STRING the search string from sdcv."
     (with-temp-buffer
       (insert sdcv-string)
       (goto-char (point-min))
-      (kill-line 1)                   ;remove unnecessary information.
+      (kill-line 1)                     ;remove unnecessary information.
       (buffer-string))))
 
 (defun sdcv-goto-sdcv ()
