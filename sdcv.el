@@ -604,7 +604,7 @@ Argument DICTIONARY-LIST the word that need transform."
   "Call sdcv to search word in dictionary list, return filtered
 string of results."
   ;; add -0 option，sdcv dilplay correct.
-  ;; TODO let sdcv cmd to be var.
+  ;; TODO let sdcv cmd to be var
   (let ((cmd (format "%s -x -0 -n %s %s --data-dir=\"%s\""
                      sdcv-program
                      (mapconcat (lambda (dict)
