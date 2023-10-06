@@ -605,7 +605,9 @@ Argument DICTIONARY-LIST the word that need transform."
 string of results."
   ;; add -0 option，sdcv dilplay correct.
   ;; TODO let sdcv cmd to be var
-  (let ((cmd (format "%s -x -0 -n %s %s --data-dir=\"%s\""
+  (let ((coding-system-for-read 'utf-8)
+        (coding-system-for-write 'gbk)
+        (cmd (format "%s -x -0 -n %s %s --data-dir=\"%s\""
                      sdcv-program
                      (mapconcat (lambda (dict)
                                   (concat "-u \"" dict "\""))
